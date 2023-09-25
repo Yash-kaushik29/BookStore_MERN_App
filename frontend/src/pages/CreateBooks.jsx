@@ -3,6 +3,7 @@ import axios from "axios";
 import BackButton from "../components/BackButton";
 import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 const CreateBooks = () => {
   const [title, setTitle] = useState("");
@@ -11,6 +12,7 @@ const CreateBooks = () => {
   const [publishYear, setPublishYear] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = () => {
     const data = {
@@ -25,12 +27,15 @@ const CreateBooks = () => {
       .post("http://localhost:5000/books", data)
       .then(() => {
         setLoading(false);
+        enqueueSnackbar("Book Created Successfully", { variant: "success" });
         navigate("/");
       })
       .catch((error) => {
         console.log(error);
-        alert("An error occured. Please try again");
         setLoading(false);
+        enqueueSnackbar("An error occured. Please try again", {
+          variant: "error",
+        });
       });
   };
 
@@ -79,7 +84,12 @@ const CreateBooks = () => {
               className="border-2 border-gray-500 px-4 py-2 w-full"
             ></input>
           </div>
-          <button className="p-2 bg-sky-400 px-4 py-2 w-full" onClick={handleSubmit}>Add Book</button>
+          <button
+            className="p-2 bg-sky-400 px-4 py-2 w-full"
+            onClick={handleSubmit}
+          >
+            Add Book
+          </button>
         </div>
       )}
     </div>

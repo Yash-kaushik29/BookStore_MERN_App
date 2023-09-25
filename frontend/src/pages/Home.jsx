@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Loader from "../components/Loader";
 import { Link } from "react-router-dom";
-import { AiOutlineEdit } from "react-icons/ai";
-import { BsInfoCircle } from "react-icons/bs";
-import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
+import { MdOutlineAddBox } from "react-icons/md";
+import BooksTable from "../components/home/BooksTable";
+import BooksCard from "../components/home/BooksCard";
 
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showType, setShowType] = useState("table");
 
   useEffect(() => {
     setLoading(true);
@@ -27,62 +28,36 @@ const Home = () => {
 
   return (
     <div className="p-4">
+      <div className="flex justify-center items-center gap-x-4">
+        <button
+          className="bg-sky-400 hover:bg-sky-500 px-4 py-1 rounded-lg"
+          onClick={() => setShowType("table")}
+        >
+          Table
+        </button>
+        <button
+          className="bg-sky-400 hover:bg-sky-500 px-4 py-1 rounded-lg"
+          onClick={() => setShowType("card")}
+        >
+          Card
+        </button>
+      </div>
       <div className="flex justify-between items-center">
-        <h1 className="text-5xl my-8 m-auto text-gray-800 font-semibold">Books</h1>
+        <h1 className="text-5xl my-8 text-gray-800 font-semibold">
+          Books
+        </h1>
         <Link to="/books/create">
           <MdOutlineAddBox className="text-sky-800 text-4xl" />
         </Link>
       </div>
 
-      {loading ? 
-         <Loader /> :
-         <table className="w-full border-separate border-spacing-2">
-          <thead>
-          <tr>
-            <th className="border border-slate-500 rounded-md">No.</th>
-            <th className="border border-slate-500 rounded-md">Title</th>
-            <th className="border border-slate-500 rounded-md max-md:hidden">Author</th>
-            <th className="border border-slate-500 rounded-md max-md:hidden">Price</th>
-            <th className="border border-slate-500 rounded-md max-md:hidden">Publish Year</th>
-            <th className="border border-slate-500 rounded-md">Operations</th>
-          </tr>
-          </thead>
-          <tbody>
-            {books.map((book, i) => (
-              <tr key={book._id} className="h-8">
-                <td className="border border-slate-500 rounded-md text-center">
-                  {i+1}
-                </td>
-                <td className="border border-slate-500 rounded-md text-center">
-                  {book.title}
-                </td>
-                <td className="border border-slate-500 rounded-md text-center max-md:hidden">
-                  {book.author}
-                </td>
-                <td className="border border-slate-500 rounded-md text-center text-green-500 max-md:hidden">
-                  ${book.price}
-                </td>
-                <td className="border border-slate-500 rounded-md text-center max-md:hidden">
-                  {book.publishYear}
-                </td>
-                <td className="border border-slate-500 rounded-md">
-                  <div className="flex justify-center gap-x-4">
-                    <Link to={`/books/details/${book._id}`}>
-                      <BsInfoCircle className="text-2xl text-green-800" />
-                    </Link>
-                    <Link to={`/books/edit/${book._id}`}>
-                      <AiOutlineEdit className="text-2xl text-yellow-400" />
-                    </Link>
-                    <Link to={`/books/delete/${book._id}`}>
-                      <MdOutlineDelete className="text-2xl text-red-700" />
-                    </Link>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-         </table>
-      }
+      {loading ? (
+        <Loader />
+      ) : showType === "table" ? (
+        <BooksTable books={books} />
+      ) : (
+        <BooksCard books={books} />
+      )}
     </div>
   );
 };
